@@ -1,6 +1,4 @@
-import sqlite3
 from abc import ABC, abstractmethod
-from sqlite3 import Cursor
 
 
 class Database(ABC):
