@@ -1,0 +1,4 @@
+.venv/
+/contents/
+data.db
+config.json
