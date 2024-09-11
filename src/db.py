@@ -1,9 +1,14 @@
 import sqlite3
 
+import utils
+from utils import db_directory
+
 class MedexDatabase:
 
     def __init__(self):
-        self.connection = sqlite3.connect("../data.db")
+        utils.create_dir(db_directory)
+        
+        self.connection = sqlite3.connect(f"{db_directory}/data.db")
         self.cursor = self.connection.cursor()
         self.table_name = "medex"
 

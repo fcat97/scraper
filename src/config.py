@@ -1,13 +1,14 @@
 import json
 
+import utils
 from utils import get_id
-
+from utils import config_file_path
 
 class MedexConfig:
 
     def __init__(self):
         try:
-            with open("../config.json", encoding='utf-8') as f:
+            with open(config_file_path, encoding='utf-8') as f:
                 self.config = json.load(f)
         except:
             self.config = {}
@@ -34,7 +35,7 @@ class MedexConfig:
 
     def close(self):
         print(json.dumps(self.config))
-        with open("../config.json", 'w', encoding='utf-8') as f:
+        with open(config_file_path, 'w', encoding='utf-8') as f:
             json.dump(self.config, f, indent=2)
 
 

@@ -3,3 +3,6 @@
 data.db
 config.json
 /src/__pycache__/
+/dist/
+/build/
+scraper.spec
