@@ -2,3 +2,4 @@
 /contents/
 data.db
 config.json
+/src/__pycache__/

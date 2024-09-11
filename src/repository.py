@@ -3,7 +3,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
-from utils import get_id
+from utils import get_id, safe_run
 
 
 class MedexRepository:
@@ -16,6 +16,7 @@ class MedexRepository:
         with open(f'../contents/{file_name}.html', "w", encoding='utf-8') as f:
             f.write(content)
 
+    @safe_run
     def get_content(self, url: str) -> str | None:
         file_name = get_id(url)
         try:

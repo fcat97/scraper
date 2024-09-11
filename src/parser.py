@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-
+from utils import safe_run
 
 class MedexParser:
 
@@ -40,6 +40,7 @@ class MedexParser:
         else:
             return True
 
+    @safe_run
     def parse_name(self) -> str:
         # Find the <small> tag
         small_tag = self.soup.find('small', class_='h1-subtitle')
@@ -53,32 +54,39 @@ class MedexParser:
 
         return h1_tag.text.strip()
 
+    @safe_run
     def parse_type(self) -> str:
         small_tag = self.soup.find('small', class_='h1-subtitle')
         return small_tag.text.strip()
 
+    @safe_run
     def parse_group(self) -> str:
         return self.soup.find('div', title='Generic Name').text.strip()
 
+    @safe_run
     def parse_manufacturer(self) -> str:
         return self.soup.find('div', title='Manufactured by').text.strip()
 
+    @safe_run
     def parse_price(self) -> str:
-        unit_price_span = self.soup.find('span', string='Unit Price:')
+        unit_price_span = self.soup.select_one('.package-container > span:nth-of-type(2)')
         if unit_price_span is None:
             return ""
         else:
-            return unit_price_span.find_next_sibling('span').text.strip()
+            return unit_price_span.text.strip()
 
+    @safe_run
     def parse_pack_size(self) -> str:
         return self.soup.find('span', class_='pack-size-info').text.strip()
 
+    @safe_run
     def parse_strip_price(self) -> str:
-        strip_price_span = self.soup.find('span', string='Strip Price:')
+        strip_price_span = self.soup.select_one('.package-container div > span:nth-of-type(2)')
         if strip_price_span is None:
             return ""
         else:
-            return strip_price_span.find_next_sibling('span').text.strip()
+            return strip_price_span.text.strip()
 
+    @safe_run
     def parse_section(self, section: str) -> str:
         return self.soup.find(id=section).find_next_sibling().text.strip()
