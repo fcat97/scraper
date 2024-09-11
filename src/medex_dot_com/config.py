@@ -1,12 +1,13 @@
 import json
 
-import utils
-from utils import get_id
-from utils import config_file_path
+from medex_dot_com.utils import IdGenerator
+from medex_dot_com.utils import config_file_path
 
 class MedexConfig:
 
     def __init__(self):
+        self.get_id = IdGenerator().get_id
+
         try:
             with open(config_file_path, encoding='utf-8') as f:
                 self.config = json.load(f)
@@ -19,17 +20,16 @@ class MedexConfig:
         return last_path.replace("_", "")
 
     def save_last_path(self, url: str):
-        id = get_id(url)
+        id = self.get_id(url)
         self.config['last_path'] = id.replace("_", "")
 
     def save_failed(self, url):
-        id = get_id(url).replace("_", "")
+        id = self.get_id(url).replace("_", "")
         failed = self.config.get('failed')
         if failed:
             failed.append(id)
         else:
-            failed = []
-            failed.append(id)
+            failed = [id]
 
         self.config['failed'] = failed
 

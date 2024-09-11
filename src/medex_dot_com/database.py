@@ -1,17 +1,19 @@
 import sqlite3
+from medex_dot_com.utils import create_dir, db_directory
+from domain.database import Database
 
-import utils
-from utils import db_directory
-
-class MedexDatabase:
+class MedexDatabase(Database):
 
     def __init__(self):
-        utils.create_dir(db_directory)
-        
-        self.connection = sqlite3.connect(f"{db_directory}/data.db")
-        self.cursor = self.connection.cursor()
-        self.table_name = "medex"
+        create_dir(db_directory)
 
+        self.connection = sqlite3.connect(f"{db_directory}/medex.db")
+        self.cursor = self.connection.cursor()
+
+        self.table_name = "medex"
+        self.init_db()
+
+    def init_db(self):
         self.cursor.execute(f"""
             CREATE TABLE IF NOT EXISTS {self.table_name}(
                 id INTEGER primary key AUTOINCREMENT,
@@ -36,14 +38,26 @@ class MedexDatabase:
             )
         """)
 
-    def post_row(self, rec: dict):
+        self.cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS status(
+                id INTEGER primary key AUTOINCREMENT,
+                url TEXT,
+                status TEXT,
+                msg TEXT
+            )
+            """)
+
+    def insert_record(self, rec: dict):
         keys = ','.join(rec.keys())
         question_marks = ','.join(list('?'*len(rec)))
         values = tuple(rec.values())
         self.cursor.execute('INSERT INTO '+self.table_name+' ('+keys+') VALUES ('+question_marks+')', values)
 
+    def save_status(self, url: str, status: str, msg: str|None):
+        self.cursor.execute("INSERT INTO status(url, status, msg) VALUES (?, ?, ?)", tuple([url, status, msg]))
+
     def close(self):
         self.connection.commit()
-        
+
         self.cursor.close()
         self.connection.close()
