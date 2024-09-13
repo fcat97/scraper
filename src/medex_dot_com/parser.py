@@ -86,8 +86,12 @@ class MedexParser(Parser):
             return unit_price_span.text.strip()
 
     @safe_run
-    def parse_pack_size(self, soup: BeautifulSoup) -> str:
-        return soup.find('span', class_='pack-size-info').text.strip()
+    def parse_pack_size(self, soup: BeautifulSoup) -> str|None:
+        span = soup.find('span', class_='pack-size-info')
+        if span:
+            return span.text.strip()
+        else:
+            return None
 
     @safe_run
     def parse_strip_price(self, soup: BeautifulSoup) -> str|None:
@@ -104,6 +108,6 @@ class MedexParser(Parser):
             return None
 
         if as_html:
-            return span.find_next_sibling().contents
+            return span.find_next_sibling().decode_contents()
         else:
             return span.find_next_sibling().text.strip()
